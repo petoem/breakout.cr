@@ -20,8 +20,8 @@ module Breakout
       @ball.position = {(WINDOW_SIZE_X - BALL_SIZE * 2) / 2, WINDOW_SIZE_Y - MARGIN_BOTTOM - PLAYER_SIZE_Y - BALL_SIZE * 2}
     end
 
-    def draw(target : SF::RenderTarget, states : SF::RenderStates)
-      PLAYER_SPEED.times do
+    def update(elapsed : SF::Time)
+      (elapsed.as_seconds * PLAYER_SPEED).to_i32.times do
         # Move player
         @player.move(1, 0) if SF::Keyboard.key_pressed?(SF::Keyboard::Right) && @player.position.x <= WINDOW_SIZE_X - PLAYER_SIZE_X
         @player.move(-1, 0) if SF::Keyboard.key_pressed?(SF::Keyboard::Left) && @player.position.x > 0
@@ -32,7 +32,7 @@ module Breakout
         end
       end
 
-      BALL_VELOCITY.times do
+      (elapsed.as_seconds * BALL_VELOCITY).to_i32.times do
         # Collison player
         @ball.direction = (@ball.direction + 90) % 360 if @ball.global_bounds.intersects?(@player.global_bounds)
         # Collison wall
@@ -47,6 +47,9 @@ module Breakout
         end
         @ball.move(Math.cos(@ball.direction * (Math::PI/180)), Math.sin(@ball.direction * (Math::PI/180)))
       end
+    end
+
+    def draw(target : SF::RenderTarget, states : SF::RenderStates)
       # Draw
       @blocks.each do |block|
         target.draw(block) unless block.destroyed
