@@ -1,0 +1,10 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "crystal-lang.problems": "syntax",
+    "crystal-lang.implementations": true,
+    "crystal-lang.types": true,
+    "crystal-lang.completion": true,
+    "crystal-lang.mainFile": "src/breakout.cr",
+    "crystal-lang.processesLimit": 3,
+    "crystal-lang.server": true
+}

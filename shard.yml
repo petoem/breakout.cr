@@ -1,0 +1,18 @@
+name: breakout
+version: 0.1.0
+
+authors:
+  - Michael Petö <michael@petoe.me>
+
+targets:
+  breakout:
+    main: src/breakout.cr
+
+dependencies:
+  crsfml:
+    github: oprypin/crsfml
+    version: 2.4.5
+
+crystal: 0.23.0
+
+license: MIT
