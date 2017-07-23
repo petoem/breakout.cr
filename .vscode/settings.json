@@ -6,5 +6,5 @@
     "crystal-lang.completion": true,
     "crystal-lang.mainFile": "src/breakout.cr",
     "crystal-lang.processesLimit": 3,
-    "crystal-lang.server": true
+    "crystal-lang.server": "/usr/bin/scry"
 }

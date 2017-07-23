@@ -1,0 +1,3 @@
+[submodule "resources/font/xeliard-font"]
+	path = resources/font/xeliard-font
+	url = git@github.com:alexglukhov/xeliard-font.git

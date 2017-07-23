@@ -10,6 +10,7 @@ clock = SF::Clock.new
 while window.open?
   while event = window.poll_event
     window.close if event.is_a?(SF::Event::Closed)
+    breakout_game.start if event.is_a?(SF::Event::KeyReleased) && (event.code == SF::Keyboard::Space) && !breakout_game.running
   end
   window.clear SF::Color::Black
   breakout_game.update clock.restart

@@ -6,8 +6,21 @@ require "./block.cr"
 module Breakout
   class Game
     include SF::Drawable
+    getter game_over : Bool = false
+    getter running : Bool = false
 
     def initialize
+      # Load Font
+      @font = SF::Font.from_file("./resources/font/xeliard-font/Xeliard.ttf")
+      # Game Texts
+      @text_start = SF::Text.new("Press space to start!", @font, 50)
+      @text_start.color = SF::Color::White
+      @text_start.origin = {@text_start.global_bounds.width/2, @text_start.global_bounds.height/2}
+      @text_start.position = {WINDOW_SIZE_X/2, WINDOW_SIZE_Y/2}
+      @text_game_over = SF::Text.new("Game Over!", @font, 60)
+      @text_game_over.color = SF::Color::White
+      @text_game_over.origin = {@text_game_over.global_bounds.width/2, @text_game_over.global_bounds.height/2}
+      @text_game_over.position = {WINDOW_SIZE_X/2, WINDOW_SIZE_Y/2}
       # Player
       @player = Player.new(SF.vector2f(PLAYER_SIZE_X, PLAYER_SIZE_Y))
       @player.position = {(WINDOW_SIZE_X - PLAYER_SIZE_X) / 2, WINDOW_SIZE_Y - MARGIN_BOTTOM - PLAYER_SIZE_Y}
@@ -20,7 +33,26 @@ module Breakout
       @ball.position = {(WINDOW_SIZE_X - BALL_SIZE * 2) / 2, WINDOW_SIZE_Y - MARGIN_BOTTOM - PLAYER_SIZE_Y - BALL_SIZE * 2}
     end
 
+    def start
+      reset_player
+      @running = true
+      @game_over = false
+    end
+
+    def game_over
+      @running = false
+      @game_over = true
+    end
+
+    def reset_player
+      @player.position = {(WINDOW_SIZE_X - PLAYER_SIZE_X) / 2, WINDOW_SIZE_Y - MARGIN_BOTTOM - PLAYER_SIZE_Y}
+      @ball.position = {(WINDOW_SIZE_X - BALL_SIZE * 2) / 2, WINDOW_SIZE_Y - MARGIN_BOTTOM - PLAYER_SIZE_Y - BALL_SIZE * 2}
+    end
+
     def update(elapsed : SF::Time)
+      return if !@running || @game_over
+
+      # Player
       (elapsed.as_seconds * PLAYER_SPEED).to_i32.times do
         # Move player
         @player.move(1, 0) if SF::Keyboard.key_pressed?(SF::Keyboard::Right) && @player.position.x <= WINDOW_SIZE_X - PLAYER_SIZE_X
@@ -32,15 +64,34 @@ module Breakout
         end
       end
 
+      # Ball
       (elapsed.as_seconds * BALL_VELOCITY).to_i32.times do
+        # Collision bottom
+        if @ball.position.y >= WINDOW_SIZE_Y - BALL_SIZE*2
+          game_over
+          break
+        end
         # Collison player
-        @ball.direction = (@ball.direction + 90) % 360 if @ball.global_bounds.intersects?(@player.global_bounds)
+        player_collision = @ball.global_bounds.intersects?(@player.global_bounds)
+        if player_collision
+          if player_collision.width/(BALL_SIZE*2) < player_collision.height/(BALL_SIZE*2)
+            @ball.collision true
+          else
+            @ball.collision false
+          end
+        end
         # Collison wall
-        @ball.direction = (@ball.direction + 90) % 360 if @ball.position.x <= 0 || @ball.position.x >= WINDOW_SIZE_X - BALL_SIZE*2 || @ball.position.y >= WINDOW_SIZE_Y - BALL_SIZE*2 || @ball.position.y <= 0
+        @ball.collision true if @ball.position.x <= 0 || @ball.position.x >= WINDOW_SIZE_X - BALL_SIZE*2
+        @ball.collision false if @ball.position.y <= 0
         # Collision block
         @blocks.map! do |block|
-          if @ball.global_bounds.intersects?(block.element.global_bounds) && !block.destroyed
-            @ball.direction = (@ball.direction + 90) % 360 unless block.destroyed
+          cbox = @ball.global_bounds.intersects?(block.element.global_bounds)
+          if cbox && !block.destroyed
+            if cbox.width/(BALL_SIZE*2) > cbox.height/(BALL_SIZE*2)
+              @ball.collision false
+            else
+              @ball.collision true
+            end
             block.destroyed = true
           end
           block
@@ -56,6 +107,8 @@ module Breakout
       end
       target.draw @ball
       target.draw @player
+      target.draw @text_start unless @running || @game_over
+      target.draw @text_game_over if @game_over
     end
   end
 end
