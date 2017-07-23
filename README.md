@@ -1,5 +1,7 @@
 # breakout
 
+![breakout.cr image](https://raw.githubusercontent.com/petoem/breakout.cr/master/game.gif)
+
 Breakout game written in crystal using [crsfml](https://github.com/oprypin/crsfml).
 
 ## Installation
