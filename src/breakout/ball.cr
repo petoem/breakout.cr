@@ -4,26 +4,26 @@ module Breakout
 
 
     private def collision_vertical
-      if @direction == 45_u64
-        @direction += 90_u64
-      elsif @direction == 135_u64
-        @direction -= 90_u64
-      elsif @direction == 225_u64
-        @direction += 90_u64
-      elsif @direction == 315_u64
-        @direction -= 90_u64
+      if 0_u64 <= @direction < 90_u64
+        @direction += (90_u64 - @direction) * 2
+      elsif 90_u64 <= @direction < 180_u64
+        @direction -= (@direction - 90_u64) * 2
+      elsif 180_u64 <= @direction < 270_u64
+        @direction += (90_u64 - (@direction - 180_u64)) * 2
+      elsif 270_u64 <= @direction <= 360_u64
+        @direction -= (90_u64 - (360_u64 - @direction)) * 2
       end
     end
 
     private def collision_horizontal
-      if @direction == 45_u64
-        @direction += 270_u64
-      elsif @direction == 135_u64
-        @direction += 90_u64
-      elsif @direction == 225_u64
-        @direction -= 90_u64
-      elsif @direction == 315_u64
-        @direction -= 270_u64
+      if 0_u64 <= @direction < 90_u64
+        @direction += 360_u64 - @direction * 2
+      elsif 90_u64 <= @direction < 180_u64
+        @direction += 180_u64 - (@direction - 90_u64) * 2
+      elsif 180_u64 <= @direction < 270_u64
+        @direction -= (@direction - 180_u64) * 2
+      elsif 270_u64 <= @direction <= 360_u64
+        @direction = 360_u64 - @direction
       end
     end
 
