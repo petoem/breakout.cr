@@ -12,6 +12,10 @@ module Breakout
     def initialize
       # Load Font
       @font = SF::Font.from_file("./resources/font/xeliard-font/Xeliard.ttf")
+      # Load Textures
+      @texture_ball = SF::Texture.from_file("./resources/image/ball.png", SF.int_rect(0, 0, 256, 256))
+      @texture_ball.smooth = true
+      @texture_bricks = Array(SF::Texture).new(4) { |index| SF::Texture.from_file("./resources/image/brick_flat/#{index + 1}.jpg", SF.int_rect(0, 0, 100, 30)) }
       # Game Texts
       @text_start = SF::Text.new("Press space to start!", @font, 50)
       @text_start.color = SF::Color::White
@@ -26,11 +30,12 @@ module Breakout
       @player.position = {(WINDOW_SIZE_X - PLAYER_SIZE_X) / 2, WINDOW_SIZE_Y - MARGIN_BOTTOM - PLAYER_SIZE_Y}
       @player.fill_color = SF::Color.new(128, 128, 128)
       # Blocks
-      @blocks = Array(Block).new(30) { |index| Block.new(index, SF.vector2f(BLOCK_SIZE_X, BLOCK_SIZE_Y)) }
+      @blocks = Array(Block).new(30) { |index| Block.new(index, @texture_bricks, SF.vector2f(BLOCK_SIZE_X, BLOCK_SIZE_Y)) }
       # Ball
       @ball = Ball.new BALL_SIZE
-      @ball.fill_color = SF::Color.new(120, 0, 10)
+      @ball.fill_color = SF::Color::White
       @ball.position = {(WINDOW_SIZE_X - BALL_SIZE * 2) / 2, WINDOW_SIZE_Y - MARGIN_BOTTOM - PLAYER_SIZE_Y - BALL_SIZE * 2}
+      @ball.set_texture(@texture_ball)
     end
 
     def start
