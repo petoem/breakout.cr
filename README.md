@@ -4,17 +4,15 @@
 
 Breakout game written in crystal using [crsfml](https://github.com/oprypin/crsfml).
 
-## Installation
+## Installation & Development
 
-TODO: Write installation instructions here
+To run the game you will have to compile it yourself.
+Before that you have to install crsfml as described [here](https://github.com/oprypin/crsfml#installation).
+Then you should be able to compile it like any other crystal project.
 
 ## Usage
 
-TODO: Write usage instructions here
-
-## Development
-
-TODO: Write development instructions here
+Please make sure that you run the game from the repository root e.g.: `./bin/breakout` or else it won't find the `resources` directory. Optionally you can put the executable next to the `resources` directory and run it from there.
 
 ## Contributing
 
