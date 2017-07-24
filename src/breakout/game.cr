@@ -84,15 +84,17 @@ module Breakout
         @ball.collision true if @ball.position.x <= 0 || @ball.position.x >= WINDOW_SIZE_X - BALL_SIZE*2
         @ball.collision false if @ball.position.y <= 0
         # Collision block
+        block_died = false
         @blocks.map! do |block|
           cbox = @ball.global_bounds.intersects?(block.element.global_bounds)
-          if cbox && !block.destroyed
+          if cbox && !block.destroyed && !block_died
             if cbox.width/(BALL_SIZE*2) > cbox.height/(BALL_SIZE*2)
               @ball.collision false
             else
               @ball.collision true
             end
             block.destroyed = true
+            block_died = true
           end
           block
         end
